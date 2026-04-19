@@ -1,4 +1,8 @@
 import React from 'react'
+import { CheckCircle2 } from 'lucide-react'
+import { GlassCard } from '../components/ui/GlassCard'
+import { StatusBadge } from '../components/ui/StatusBadge'
+import styles from '../styles/pricingPage.module.css'
 
 const plans = [
     {
@@ -25,23 +29,73 @@ const plans = [
 
 export default function PricingPage() {
     return (
-        <div className='pricingPage'>
-            <div className='pricingContent'>
-                <h1>Pricing Plans</h1>
-                <p>Choose the plan that fits your team size and meeting needs.</p>
+        <div className={styles.pageShell}>
+            <div className={styles.pricingContent}>
+                <h1>Simple, honest fees.</h1>
+                <p>Choose the plan that matches your team velocity and collaboration scale.</p>
 
-                <div className='pricingGrid'>
+                <div className={styles.pricingGrid}>
                     {plans.map((plan) => (
-                        <div key={plan.name} className='pricingCard'>
+                        <GlassCard key={plan.name} className={styles.pricingCard}>
                             <h2>{plan.name}</h2>
-                            <p className='pricingValue'>{plan.price}</p>
+                            <p className={styles.pricingValue}>{plan.price}</p>
                             <ul>
                                 {plan.points.map((point) => (
-                                    <li key={point}>{point}</li>
+                                    <li key={point}>
+                                        <CheckCircle2 size={16} />
+                                        <span>{point}</span>
+                                    </li>
                                 ))}
                             </ul>
-                        </div>
+                            <StatusBadge variant={plan.name === 'Enterprise' ? 'blue' : 'green'}>
+                                {plan.name === 'Enterprise' ? 'Custom onboarding' : 'Ready to deploy'}
+                            </StatusBadge>
+                        </GlassCard>
                     ))}
+                </div>
+
+                <div className={styles.pricingTableWrap}>
+                    <table className={styles.pricingTable}>
+                        <thead>
+                            <tr>
+                                <th>Capability</th>
+                                <th>Basic</th>
+                                <th>Pro</th>
+                                <th>Business</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Participant limit</td>
+                                <td>100</td>
+                                <td>150</td>
+                                <td>300</td>
+                                <td>Custom</td>
+                            </tr>
+                            <tr>
+                                <td>Cloud recording</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>SSO and advanced policy</td>
+                                <td>No</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Dedicated support</td>
+                                <td>No</td>
+                                <td>Email</td>
+                                <td>Priority</td>
+                                <td>24/7 + TAM</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

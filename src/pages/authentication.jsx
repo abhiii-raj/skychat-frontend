@@ -17,13 +17,13 @@ import { useNavigate } from 'react-router-dom';
 const authTheme = createTheme({
     palette: {
         primary: {
-            main: '#0fa37f',
+            main: '#2b66df',
         },
         secondary: {
-            main: '#0f7da3',
+            main: '#111f3f',
         },
         background: {
-            default: '#ecf6f3',
+            default: '#f4f8ff',
         },
     },
     shape: {
@@ -33,7 +33,7 @@ const authTheme = createTheme({
 
 export default function Authentication() {
 
-    
+
 
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -104,15 +104,15 @@ export default function Authentication() {
                     sm={4}
                     md={7}
                     sx={{
-                        backgroundImage: 'linear-gradient(125deg, rgba(8,32,28,0.84), rgba(17,70,61,0.72)), url(https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1500&q=80)',
+                        backgroundImage: 'linear-gradient(128deg, rgba(10,23,70,0.86), rgba(26,65,158,0.75)), url(https://images.unsplash.com/photo-1642543348745-10d8ad1a7f12?auto=format&fit=crop&w=1500&q=80)',
                         backgroundRepeat: 'no-repeat',
-                        backgroundColor: '#dcebe6',
+                        backgroundColor: '#dce6ff',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
                 />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={0} square sx={{
-                    background: 'linear-gradient(180deg, #f7fffc 0%, #ecf4f1 100%)'
+                    background: 'linear-gradient(180deg, #f8fbff 0%, #eef3ff 100%)'
                 }}>
                     <Box
                         sx={{
@@ -123,12 +123,19 @@ export default function Authentication() {
                             alignItems: 'center',
                             p: 3,
                             borderRadius: 4,
-                            backgroundColor: 'rgba(255,255,255,0.65)'
+                            backgroundColor: 'rgba(255,255,255,0.75)',
+                            border: '1px solid #dce7ff',
+                            boxShadow: '0 14px 30px rgba(18, 42, 89, 0.08)'
                         }}
                     >
                         <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                             <LockOutlinedIcon />
                         </Avatar>
+
+                        <Box sx={{ mb: 1.5, textAlign: 'center' }}>
+                            <h2 style={{ fontSize: '1.5rem' }}>Welcome to Sky Chat</h2>
+                            <p style={{ color: '#63789f', marginTop: '0.35rem' }}>Sign in to access your realtime collaboration dashboard.</p>
+                        </Box>
 
 
                         <div>

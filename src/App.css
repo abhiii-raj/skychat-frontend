@@ -1,81 +1,81 @@
 .landingPageContainer {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 88% 12%, rgba(15, 163, 127, 0.2) 0%, transparent 36%),
-    radial-gradient(circle at 8% 70%, rgba(2, 166, 194, 0.22) 0%, transparent 40%),
-    linear-gradient(130deg, #0f1f1d 5%, #112c2a 48%, #163734 100%);
-  color: #f3fcfa;
-  padding: 1.2rem 2.2rem 2rem;
+  background: linear-gradient(180deg, #f5f8ff 0%, #f8fafc 58%, #ffffff 100%);
+  color: #0f172a;
+  padding: 1rem clamp(1rem, 3.4vw, 2.4rem) 3rem;
 }
 
 .landingPageContainer nav {
-  padding-block: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .marketingNav {
-  background-color: #06154a;
-  border-radius: 16px;
-  padding: 0.85rem 1rem;
-  gap: 1rem;
+  position: sticky;
+  top: 0.8rem;
+  z-index: 20;
+  background: linear-gradient(120deg, #071449, #0d205f 55%, #0a1b56 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 16px 34px rgba(8, 20, 64, 0.3);
 }
 
 .navLeft,
 .navRight {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .leftNavLinks {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.2rem;
 }
 
 .navHeader h2 {
-  font-size: 1.9rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
   color: #ffffff;
 }
 
 .plainNavButton {
   border: none;
   background: transparent;
-  color: #e7f0ff;
-  border-radius: 999px;
-  padding: 0.6rem 0.9rem;
-  font-weight: 700;
+  color: #e4ecff;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .plainNavButton:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.14);
 }
 
 .actionNavButton {
   border: none;
-  background: linear-gradient(145deg, #2a79ff, #1862e4);
+  background: linear-gradient(145deg, #2e7af8, #2364df);
   color: #f1f7ff;
-  border-radius: 14px;
-  padding: 0.65rem 1.1rem;
+  border-radius: 12px;
+  padding: 0.58rem 0.95rem;
   font-weight: 800;
   cursor: pointer;
 }
 
 .navSearch {
-  width: 180px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 170px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 999px;
-  background-color: rgba(7, 22, 76, 0.9);
+  background-color: rgba(7, 22, 76, 0.86);
   color: #eef4ff;
-  padding: 0.55rem 0.8rem;
+  padding: 0.5rem 0.8rem;
 }
 
 .navSearch::placeholder {
-  color: #b8c9ef;
+  color: #a8b9e0;
 }
 
 .meetMenuRoot {
@@ -86,13 +86,13 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  width: 170px;
+  width: 182px;
   display: grid;
   gap: 0.3rem;
   background-color: #0f2164;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
-  padding: 0.4rem;
+  border-radius: 11px;
+  padding: 0.45rem;
   z-index: 12;
   box-shadow: 0 14px 25px rgba(0, 0, 0, 0.25);
 }
@@ -101,7 +101,7 @@
   border: none;
   background: transparent;
   color: #eaf2ff;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 0.55rem;
   font-weight: 600;
   text-align: left;
@@ -112,94 +112,248 @@
   background-color: rgba(255, 255, 255, 0.12);
 }
 
-.landingPageContainer nav .navlist {
-  display: flex;
+.landingMainContainer {
+  max-width: 1180px;
+  margin: 3rem auto 0;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(1rem, 4vw, 4rem);
+}
+
+.heroLeft {
+  animation: riseIn 0.7s ease;
+}
+
+.heroTag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid #c8d8ff;
+  background: #ecf2ff;
+  color: #295ec8;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landingMainContainer h1 {
+  margin-top: 1rem;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  line-height: 1.04;
+}
+
+.landingMainContainer h1 span {
+  color: #1f4fba;
+}
+
+.landingMainContainer p {
+  margin-top: 1rem;
+  color: #5b687e;
+  font-size: 1rem;
+  line-height: 1.68;
+  max-width: 520px;
+}
+
+.heroActions {
+  margin-top: 1.4rem;
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.heroPrimaryBtn,
+.heroGhostBtn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.74rem 1.1rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.landingPageContainer nav .navlist p {
-  padding: 0.6rem 0.85rem;
-  border-radius: 999px;
-  transition: background-color 0.2s ease;
+.heroPrimaryBtn {
+  background: linear-gradient(120deg, #111b2d, #1f2f4d);
+  color: #f1f5ff;
 }
 
-.landingPageContainer nav .navlist p:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+.heroGhostBtn {
+  background: #f2f6ff;
+  color: #1f4fba;
+  border: 1px solid #ccdcff;
 }
 
-.landingPageContainer nav .navlist div[role='button'] {
-  background: linear-gradient(135deg, #0fa37f, #0f7da3);
-  color: #ecfffa;
-  padding: 0.65rem 1rem;
-  border-radius: 999px;
-  font-weight: 700;
-  box-shadow: 0 8px 20px rgba(15, 163, 127, 0.35);
+.heroVisual {
+  position: relative;
+  min-height: 420px;
+  display: grid;
+  place-items: center;
 }
 
-.landingMainContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  margin-top: 2.4rem;
+.visualOrb {
+  position: absolute;
+  width: min(420px, 95%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(53, 110, 240, 0.26) 0%, rgba(53, 110, 240, 0) 68%);
 }
 
-.landingMainContainer > div:nth-child(1) {
-  max-width: 580px;
-  animation: riseIn 0.9s ease;
+.heroVisual img {
+  width: min(410px, 85%);
+  border-radius: 28px;
+  position: relative;
+  z-index: 2;
 }
 
-.landingMainContainer > div:nth-child(1) h1 {
-  font-size: clamp(2.1rem, 5.6vw, 4.4rem);
-  line-height: 1.03;
+.heroFloatingCard {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 0.5rem;
+  z-index: 3;
+  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid #dfe9ff;
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+  box-shadow: 0 12px 25px rgba(34, 73, 145, 0.16);
 }
 
-.landingMainContainer > div:nth-child(1) p {
-  margin-top: 1rem;
-  font-size: 1.08rem;
-  color: #ceebe5;
+.heroFloatingCard h4 {
+  font-size: 0.84rem;
+  margin: 0;
 }
 
-.landingMainContainer > div:nth-child(1) div[role='button'] {
-  width: fit-content;
-  margin-top: 1.7rem;
-  border-radius: 16px;
-  background: #f0fff9;
-  padding: 0.2rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+.heroFloatingCard p {
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  color: #637494;
 }
 
-.landingMainContainer > div:nth-child(1) div[role='button'] a {
-  display: inline-block;
-  text-decoration: none;
-  color: #083b32;
-  background: linear-gradient(135deg, #ddfff4, #bff2e4);
+.landingStatsStrip {
+  margin: 2rem auto 0;
+  max-width: 1180px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #dbe5f9;
   border-radius: 14px;
-  padding: 0.88rem 1.25rem;
-  font-size: 1.06rem;
+  overflow: hidden;
+}
+
+.landingStatsStrip > div {
+  background: #ffffff;
+  padding: 1rem;
+  border-right: 1px solid #edf1fa;
+}
+
+.landingStatsStrip > div:last-child {
+  border-right: none;
+}
+
+.landingStatsStrip h3 {
+  font-size: 1.4rem;
+}
+
+.landingStatsStrip p {
+  margin-top: 0.25rem;
+  color: #64738d;
+  font-size: 0.9rem;
+}
+
+.landingFeatureSection,
+.landingPricingPreview,
+.landingCtaBand {
+  max-width: 1180px;
+  margin: 3rem auto 0;
+}
+
+.sectionHeader h2 {
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+}
+
+.sectionHeader p {
+  margin-top: 0.5rem;
+  color: #687792;
+}
+
+.featureGrid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.8rem;
+}
+
+.featureCard {
+  padding: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid #dbe5f9;
+  background: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(18, 44, 95, 0.1);
+}
+
+.featureCard p {
+  margin-top: 0.45rem;
+  color: #697894;
+  line-height: 1.65;
+}
+
+.pricingPreviewGrid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.8rem;
+}
+
+.previewPlan {
+  border: 1px solid #dae5fd;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 1.1rem;
+}
+
+.previewPlan.active {
+  border-color: #2f66dc;
+  box-shadow: 0 0 0 1px #2f66dc;
+}
+
+.previewPrice {
+  margin-top: 0.4rem;
+  color: #2a5bc8;
+  font-size: 2rem;
   font-weight: 800;
 }
 
-.landingMainContainer > div:nth-child(2) {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+.landingPricingPreview .heroGhostBtn {
+  margin-top: 1rem;
 }
 
-.landingMainContainer > div:nth-child(2) img {
-  max-height: 71vh;
-  width: min(470px, 93%);
-  object-fit: contain;
-  animation: floatY 3.2s ease-in-out infinite;
+.landingCtaBand {
+  text-align: center;
+  border-radius: 16px;
+  padding: 2rem 1rem;
+  background: radial-gradient(circle at 20% 0%, #1f2b45 0%, #0b111d 72%);
+  color: #eef4ff;
 }
 
-.homeShell {
+.landingCtaBand h2 {
+  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+}
+
+.landingCtaBand p {
+  margin: 0.6rem auto 1rem;
+  max-width: 620px;
+  color: #b7c2dc;
+}
+
+.homeShell,
+.historyPage,
+.pricingPage {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(15, 163, 127, 0.16), transparent 34%),
-    linear-gradient(180deg, #eff8f5 0%, #e7f0ed 100%);
+  background: linear-gradient(180deg, #f4f8ff 0%, #ffffff 72%);
 }
 
 .navBar {
@@ -207,13 +361,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem clamp(1rem, 4vw, 3.2rem);
-  background-color: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(9, 73, 61, 0.1);
+  background: #ffffff;
+  border-bottom: 1px solid #e6edfa;
 }
 
 .brandTitle {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   letter-spacing: -0.015em;
 }
 
@@ -221,29 +374,29 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-muted);
+  color: #6b7a96;
 }
 
 .meetContainer {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   align-items: center;
-  gap: clamp(1rem, 4vw, 4.5rem);
-  max-width: 1200px;
+  gap: clamp(1rem, 4vw, 4rem);
+  max-width: 1160px;
   margin: 2rem auto 0;
   padding: 0 1.2rem 2rem;
 }
 
 .leftPanel {
-  padding: clamp(1.3rem, 3.2vw, 2rem);
-  border-radius: 24px;
-  background-color: rgba(255, 255, 255, 0.84);
-  border: 1px solid rgba(8, 63, 53, 0.08);
-  box-shadow: var(--shadow-soft);
+  padding: clamp(1.2rem, 3.2vw, 2rem);
+  border-radius: 16px;
+  background-color: #ffffff;
+  border: 1px solid #dbe5f9;
+  box-shadow: 0 14px 32px rgba(16, 41, 90, 0.08);
 }
 
 .leftPanel h2 {
-  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
   max-width: 580px;
 }
 
@@ -261,17 +414,13 @@
 
 .rightPanel > img {
   width: min(500px, 90%);
-  border-radius: 28px;
-  border: 10px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 25px 45px rgba(8, 58, 50, 0.18);
+  border-radius: 24px;
+  border: 8px solid #f4f7ff;
+  box-shadow: 0 18px 34px rgba(10, 29, 71, 0.12);
 }
 
 .historyPage {
-  min-height: 100vh;
   padding: 1.2rem 1.2rem 2.5rem;
-  background:
-    radial-gradient(circle at 86% 10%, rgba(15, 163, 127, 0.14) 0%, transparent 35%),
-    #eef6f3;
 }
 
 .historyTopBar {
@@ -290,16 +439,14 @@
 }
 
 .historyCard {
-  border-radius: 16px;
-  border: 1px solid rgba(11, 74, 63, 0.16);
-  box-shadow: 0 10px 24px rgba(9, 58, 51, 0.08);
-  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 12px;
+  border: 1px solid #dce7fb;
+  box-shadow: 0 10px 24px rgba(19, 45, 92, 0.08);
+  background-color: #ffffff;
 }
 
 .pricingPage {
-  min-height: 100vh;
-  padding: 1.2rem;
-  background: radial-gradient(circle at 12% 10%, rgba(40, 126, 255, 0.2) 0%, transparent 38%), #edf2ff;
+  padding: 2.2rem 1rem;
 }
 
 .pricingContent {
@@ -313,7 +460,7 @@
 }
 
 .pricingContent p {
-  color: #41506f;
+  color: #50617f;
 }
 
 .pricingGrid {
@@ -325,8 +472,8 @@
 
 .pricingCard {
   background-color: #ffffff;
-  border-radius: 18px;
-  border: 1px solid rgba(48, 88, 175, 0.18);
+  border-radius: 14px;
+  border: 1px solid #dbe5f9;
   box-shadow: 0 12px 24px rgba(24, 47, 95, 0.1);
   padding: 1rem;
 }
@@ -345,7 +492,42 @@
   display: grid;
   gap: 0.45rem;
   margin-left: 1.1rem;
-  color: #46587c;
+  color: #4f6081;
+}
+
+.pricingTableWrap {
+  margin-top: 1rem;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #dbe5f9;
+  border-radius: 12px;
+}
+
+.pricingTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.pricingTable th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7b89a4;
+  padding: 0.78rem;
+  border-bottom: 1px solid #edf2fb;
+}
+
+.pricingTable td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #f1f5fd;
+  color: #40516f;
+  font-size: 0.9rem;
+}
+
+.pricingTable tbody tr:last-child td {
+  border-bottom: none;
 }
 
 @keyframes riseIn {
@@ -379,7 +561,7 @@
   .landingPageContainer nav {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.85rem;
+    gap: 0.75rem;
   }
 
   .navLeft,
@@ -393,13 +575,20 @@
   }
 
   .landingMainContainer {
-    flex-direction: column;
-    margin-top: 1.2rem;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    margin-top: 1.6rem;
   }
 
-  .landingMainContainer > div:nth-child(2) {
-    width: 100%;
+  .landingStatsStrip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .landingStatsStrip > div:nth-child(2) {
+    border-right: none;
+  }
+
+  .landingStatsStrip > div:nth-child(-n + 2) {
+    border-bottom: 1px solid #edf1fa;
   }
 
   .meetContainer {

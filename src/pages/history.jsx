@@ -1,33 +1,47 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { Home, CalendarDays, Hash } from 'lucide-react'
 import { AuthContext } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import HomeIcon from '@mui/icons-material/Home';
+import { useNavigate } from 'react-router-dom'
+import { GlassCard } from '../components/ui/GlassCard'
+import { StatusBadge } from '../components/ui/StatusBadge'
+import styles from '../styles/historyPage.module.css'
 
-import { IconButton } from '@mui/material';
 export default function History() {
 
 
     const { getHistoryOfUser } = useContext(AuthContext);
 
     const [meetings, setMeetings] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
 
     const routeTo = useNavigate();
 
     useEffect(() => {
+        let mounted = true;
+
         const fetchHistory = async () => {
             try {
                 const history = await getHistoryOfUser();
-                setMeetings(history);
+                if (mounted) {
+                    setMeetings(Array.isArray(history) ? history : []);
+                }
             } catch {
-                // IMPLEMENT SNACKBAR
+                if (mounted) {
+                    setMeetings([]);
+                }
+            } finally {
+                if (mounted) {
+                    setIsLoading(false);
+                }
             }
         }
 
         fetchHistory();
+
+        return () => {
+            mounted = false;
+        }
     }, [getHistoryOfUser])
 
     let formatDate = (dateString) => {
@@ -42,47 +56,45 @@ export default function History() {
     }
 
     return (
-        <div className='historyPage'>
+        <div className={styles.pageShell}>
+            <div className={styles.contentWrap}>
+                <header className={styles.header}>
+                    <button type='button' className={styles.backButton} onClick={() => routeTo('/home')}>
+                        <Home size={18} />
+                        <span>Back to Home</span>
+                    </button>
 
-            <div className='historyTopBar'>
-                <IconButton onClick={() => {
-                    routeTo("/home")
-                }}>
-                    <HomeIcon />
-                </IconButton >
-                <Typography variant='h5'>Meeting History</Typography>
-            </div>
+                    <div>
+                        <h1>Meeting History</h1>
+                        <p>Your recently joined and hosted room timeline.</p>
+                    </div>
+                </header>
 
-            <div className='historyGrid'>
-                {
-                    (meetings.length !== 0) ? meetings.map((e, i) => {
+                <div className={styles.grid}>
+                    {isLoading ? Array.from({ length: 4 }).map((_, i) => (
+                        <GlassCard key={`skeleton-${i}`} className={styles.historyCard}>
+                            <div className={styles.skeletonLine}></div>
+                            <div className={styles.skeletonLine}></div>
+                        </GlassCard>
+                    )) : meetings.length !== 0 ? meetings.map((e, i) => {
                         return (
+                            <GlassCard key={i} className={styles.historyCard}>
+                                <div className={styles.metaRow}>
+                                    <span className={styles.metaKey}><Hash size={16} />Code</span>
+                                    <code>{e.meetingCode || '--'}</code>
+                                </div>
 
+                                <div className={styles.metaRow}>
+                                    <span className={styles.metaKey}><CalendarDays size={16} />Date</span>
+                                    <span>{formatDate(e.date)}</span>
+                                </div>
 
-                            <Card key={i} variant="outlined" className='historyCard'>
-
-
-                                <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        Code: {e.meetingCode}
-                                    </Typography>
-
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        Date: {formatDate(e.date)}
-                                    </Typography>
-
-                                </CardContent>
-
-
-                            </Card>
-
-
+                                <StatusBadge variant='green'>Completed</StatusBadge>
+                            </GlassCard>
                         )
-                    }) : <Typography color='text.secondary'>No meeting history yet.</Typography>
-
-                }
+                    }) : <p className={styles.emptyText}>No meeting history yet.</p>}
+                </div>
             </div>
-
         </div>
     )
 }

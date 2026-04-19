@@ -12,6 +12,7 @@ import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import ChatIcon from '@mui/icons-material/Chat'
 import server from '../environment';
+import { useParams } from 'react-router-dom';
 
 const server_url = server;
 
@@ -24,6 +25,7 @@ const peerConfigConnections = {
 }
 
 export default function VideoMeetComponent() {
+    const { url: roomCode } = useParams();
 
     var socketRef = useRef();
     let socketIdRef = useRef();
@@ -281,7 +283,7 @@ export default function VideoMeetComponent() {
         socketRef.current.on('signal', gotMessageFromServer)
 
         socketRef.current.on('connect', () => {
-            socketRef.current.emit('join-call', window.location.href)
+            socketRef.current.emit('join-call', roomCode)
             socketIdRef.current = socketRef.current.id
 
             socketRef.current.on('chat-message', addMessage)
@@ -437,6 +439,14 @@ export default function VideoMeetComponent() {
         setAskForUsername(false);
         getMedia();
     }
+
+    useEffect(() => {
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        }
+    }, [])
 
 
     return (
