@@ -1,38 +1,52 @@
-import './App.css';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import LandingPage from './pages/landing';
-import Authentication from './pages/authentication';
-import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
+import LoginPage from './components/ui/Auth/LoginPage';
+import ForgotPasswordPage from './components/ui/Auth/ForgotPasswordPage';
+import RegisterPage from './components/ui/Auth/RegisterPage';
+import ChatPage from './components/ui/Chat/ChatPage';
+import ProtectedRoute from './components/ui/Shared/ProtectedRoute';
 import VideoMeetComponent from './pages/VideoMeet';
-import HomeComponent from './pages/home';
-import History from './pages/history';
-import PricingPage from './pages/pricing';
+import './styles/skychat.css';
 
-function App() {
+/* Inner app that has access to AuthContext */
+const AppRoutes = () => {
+  const { token } = useAuth();
+
   return (
-    <div className="App">
-
-      <Router>
-
-        <AuthProvider>
-
-
-          <Routes>
-
-            <Route path='/' element={<LandingPage />} />
-
-            <Route path='/auth' element={<Authentication />} />
-
-            <Route path='/home' element={<HomeComponent />} />
-            <Route path='/history' element={<History />} />
-            <Route path='/pricing' element={<PricingPage />} />
-            <Route path='/:url' element={<VideoMeetComponent />} />
-          </Routes>
-        </AuthProvider>
-
-      </Router>
-    </div>
+    <SocketProvider token={token}>
+      <Routes>
+        <Route path="/login"    element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/video/:url"
+          element={
+            <ProtectedRoute>
+              <VideoMeetComponent />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/chat" replace />} />
+      </Routes>
+    </SocketProvider>
   );
-}
+};
+
+const App = () => (
+  <AuthProvider>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  </AuthProvider>
+);
 
 export default App;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
@@ -23,6 +24,21 @@ const peerConfigConnections = {
         { "urls": "stun:stun.l.google.com:19302" }
     ]
 }
+
+const AVATAR_COLORS = ['blue', 'teal', 'coral', 'purple', 'amber', 'pink'];
+
+const getAvatarColor = (name = '') => {
+    if (!name) return AVATAR_COLORS[0];
+    return AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length];
+};
+
+const getInitials = (name = '') => {
+    const parts = String(name).trim().split(' ').filter(Boolean);
+    if (parts.length >= 2) {
+        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return String(name).slice(0, 2).toUpperCase() || 'U';
+};
 
 export default function VideoMeetComponent() {
     const { url: roomCode } = useParams();
@@ -483,12 +499,16 @@ export default function VideoMeetComponent() {
                             <div className={styles.chattingDisplay}>
 
                                 {messages.length !== 0 ? messages.map((item, index) => {
-
-                                    console.log(messages)
+                                    const avatarColor = getAvatarColor(item.sender);
                                     return (
                                         <div className={styles.chatItem} key={index}>
-                                            <p className={styles.chatSender}>{item.sender}</p>
-                                            <p>{item.data}</p>
+                                            <div className={`${styles.chatAvatar} ${styles[`chatAvatar_${avatarColor}`]}`}>
+                                                {getInitials(item.sender)}
+                                            </div>
+                                            <div className={styles.chatBubble}>
+                                                <p className={styles.chatSender}>{item.sender}</p>
+                                                <p className={styles.chatText}>{item.data}</p>
+                                            </div>
                                         </div>
                                     )
                                 }) : <p>No Messages Yet</p>}

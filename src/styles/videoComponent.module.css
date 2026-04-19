@@ -1,9 +1,9 @@
 .lobbyWrapper {
     min-height: 100vh;
     background:
-        radial-gradient(circle at 12% 10%, rgba(36, 200, 162, 0.2) 0%, transparent 38%),
-        radial-gradient(circle at 84% 12%, rgba(37, 136, 207, 0.2) 0%, transparent 40%),
-        linear-gradient(130deg, #0f1f1d 0%, #123330 45%, #0f2523 100%);
+        radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.14) 0%, transparent 38%),
+        radial-gradient(circle at 84% 12%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        linear-gradient(130deg, #0b0f1a 0%, #111827 45%, #0b1220 100%);
     display: grid;
     place-items: center;
     padding: 1rem;
@@ -13,18 +13,19 @@
     width: min(760px, 96vw);
     border-radius: 26px;
     padding: 1.2rem;
-    background: rgba(245, 255, 251, 0.9);
-    box-shadow: 0 20px 60px rgba(0, 15, 12, 0.4);
+    background: rgba(17, 24, 39, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
 }
 
 .lobbyCard h2 {
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     margin-bottom: 0.5rem;
-    color: #11312d;
+    color: #f8fafc;
 }
 
 .lobbyCard p {
-    color: #3f5f5a;
+    color: #94a3b8;
 }
 
 .lobbyActions {
@@ -38,8 +39,8 @@
     margin-top: 1rem;
     border-radius: 20px;
     overflow: hidden;
-    background: #081d1a;
-    border: 1px solid rgba(10, 82, 68, 0.24);
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .lobbyPreview video {
@@ -53,8 +54,8 @@
     position: relative;
     min-height: 100vh;
     background:
-        radial-gradient(circle at 92% 8%, rgba(15, 163, 127, 0.18) 0%, transparent 40%),
-        linear-gradient(180deg, #102926 0%, #0b1f1d 65%, #0a1716 100%);
+        radial-gradient(circle at 92% 8%, rgba(59, 130, 246, 0.16) 0%, transparent 40%),
+        linear-gradient(180deg, #0b0f1a 0%, #111827 65%, #0b1220 100%);
     padding: 1rem 1rem 5.8rem;
 }
 
@@ -66,8 +67,8 @@
     max-height: 200px;
     border-radius: 14px;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
     z-index: 8;
 }
 
@@ -82,20 +83,20 @@
     gap: 0.35rem;
     padding: 0.5rem 0.75rem;
     border-radius: 999px;
-    background: rgba(9, 24, 22, 0.86);
-    border: 1px solid rgba(203, 244, 236, 0.15);
+    background: rgba(17, 24, 39, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(7px);
     z-index: 12;
 }
 
 .controlButton {
-    color: #e9fcf7 !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #e5e7eb !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .endCallButton {
-    color: #ffe9e9 !important;
-    background-color: rgba(204, 54, 54, 0.75) !important;
+    color: #ffffff !important;
+    background-color: rgba(220, 53, 69, 0.88) !important;
 }
 
 .buttonContainers svg {
@@ -114,19 +115,21 @@
     height: min(36vh, 300px);
     object-fit: cover;
     border-radius: 14px;
-    border: 1px solid rgba(245, 255, 252, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
 }
 
 .chatRoom {
     position: fixed;
     top: 1rem;
-    right: 1rem;
+    left: 1rem;
+    right: auto;
     height: calc(100vh - 2rem);
     width: min(360px, 92vw);
-    background: rgba(247, 255, 252, 0.95);
+    background: rgba(17, 24, 39, 0.96);
     border-radius: 18px;
-    border: 1px solid rgba(9, 82, 67, 0.2);
-    box-shadow: 0 20px 35px rgba(4, 31, 25, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.42);
     padding: 0.9rem;
     z-index: 10;
 }
@@ -139,25 +142,68 @@
 .chatContainer h1 {
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
-    color: #0c3630;
+    color: #f8fafc;
+    letter-spacing: -0.01em;
+    font-weight: 600;
 }
 
 .chattingDisplay {
     height: calc(100% - 90px);
     overflow-y: auto;
     padding-right: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
 }
 
 .chatItem {
-    margin-bottom: 0.95rem;
-    padding: 0.65rem;
-    border-radius: 10px;
-    background-color: #eef7f4;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+}
+
+.chatAvatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.chatAvatar_blue { background: rgba(59,130,246,0.18); color: #60a5fa; }
+.chatAvatar_teal { background: rgba(16,185,129,0.15); color: #34d399; }
+.chatAvatar_coral { background: rgba(239,68,68,0.14); color: #f87171; }
+.chatAvatar_purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.chatAvatar_amber { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.chatAvatar_pink { background: rgba(236,72,153,0.12); color: #f472b6; }
+
+.chatBubble {
+    flex: 1;
+    min-width: 0;
+    border-radius: 12px;
+    background-color: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.55rem 0.7rem;
 }
 
 .chatSender {
     font-weight: 700;
-    color: #0d4b40;
+    color: #60a5fa;
+    font-size: 0.78rem;
+    margin: 0;
+}
+
+.chatText {
+    margin: 0.2rem 0 0;
+    color: #e5e7eb;
+    font-size: 0.87rem;
+    line-height: 1.45;
+    word-break: break-word;
 }
 
 .chattingArea {
@@ -184,6 +230,10 @@
         width: 36vw;
         bottom: 6.2rem;
         right: 0.7rem;
+    }
+
+    .chatRoom {
+        border-radius: 14px;
     }
 
     .lobbyActions {

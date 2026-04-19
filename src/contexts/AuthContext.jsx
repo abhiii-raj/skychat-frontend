@@ -1,98 +1,146 @@
-import axios from "axios";
-import httpStatus from "http-status";
-import { createContext, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import server from "../environment";
+import { createContext, useContext, useEffect, useState } from 'react';
+import api from '../services/api';
+import { usersAPI } from '../services/api';
 
+const AuthContext = createContext(null);
 
-export const AuthContext = createContext({});
+export const useAuth = () => useContext(AuthContext);
 
-const client = axios.create({
-    baseURL: `${server}/api/v1/users`
-})
+const TOKEN_KEY = 'sky_token';
+const USER_KEY = 'sky_user';
 
+const readStoredUser = () => {
+  try {
+    const serialized = localStorage.getItem(USER_KEY);
+    return serialized ? JSON.parse(serialized) : null;
+  } catch {
+    return null;
+  }
+};
+
+const fileToDataUrl = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = reject;
+  reader.readAsDataURL(file);
+});
 
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => readStoredUser());
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [loading, setLoading] = useState(false);
 
-    const authContext = useContext(AuthContext);
+  useEffect(() => {
+    setLoading(false);
+  }, [token]);
 
+  const persistSession = (nextToken, nextUser) => {
+    localStorage.setItem(TOKEN_KEY, nextToken);
+    localStorage.setItem(USER_KEY, JSON.stringify(nextUser || null));
+    setToken(nextToken);
+    setUser(nextUser || null);
+  };
 
-    const [userData, setUserData] = useState(authContext);
+  const login = (nextToken, nextUser = null) => {
+    persistSession(nextToken, nextUser);
+  };
 
+  const handleLogin = async (username, password) => {
+    const { data } = await api.post('/login', { username, password });
+    persistSession(data.token, data.user || { username, name: username });
+    return data;
+  };
 
-    const router = useNavigate();
+  const handleRegister = async (name, username, password) => {
+    const { data } = await api.post('/register', { name, username, password });
+    return data;
+  };
 
-    const handleRegister = async (name, username, password) => {
-        try {
-            let request = await client.post("/register", {
-                name: name,
-                username: username,
-                password: password
-            })
+  const refreshProfile = async () => {
+    const { data } = await usersAPI.getProfile();
+    setUser(data);
+    localStorage.setItem(USER_KEY, JSON.stringify(data));
+    return data;
+  };
 
+  const updateProfile = async ({ name, bio, avatarFile }) => {
+    const currentToken = localStorage.getItem(TOKEN_KEY) || '';
 
-            if (request.status === httpStatus.CREATED) {
-                return request.data.message;
-            }
-        } catch (err) {
-            throw err;
-        }
+    if (currentToken.startsWith('google-')) {
+      const updatedUser = {
+        ...(user || {}),
+        name: (name || user?.name || '').trim(),
+        bio: (bio || '').trim(),
+      };
+
+      if (avatarFile) {
+        updatedUser.avatarUrl = await fileToDataUrl(avatarFile);
+      }
+
+      setUser(updatedUser);
+      localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+      return updatedUser;
     }
 
-    const handleLogin = async (username, password) => {
-        try {
-            let request = await client.post("/login", {
-                username: username,
-                password: password
-            });
-
-            console.log(username, password)
-            console.log(request.data)
-
-            if (request.status === httpStatus.OK) {
-                localStorage.setItem("token", request.data.token);
-                router("/home")
-            }
-        } catch (err) {
-            throw err;
-        }
+    const formData = new FormData();
+    formData.append('name', name || '');
+    formData.append('bio', bio || '');
+    if (avatarFile) {
+      formData.append('avatar', avatarFile);
     }
 
-    const getHistoryOfUser = async () => {
-        try {
-            let request = await client.get("/get_all_activity", {
-                params: {
-                    token: localStorage.getItem("token")
-                }
-            });
-            return request.data
-        } catch
-         (err) {
-            throw err;
-        }
+    const { data } = await usersAPI.updateProfile(formData);
+    setUser(data);
+    localStorage.setItem(USER_KEY, JSON.stringify(data));
+    return data;
+  };
+
+  const addToUserHistory = async (meetingCode) => {
+    const currentToken = localStorage.getItem(TOKEN_KEY);
+
+    if (!currentToken) {
+      throw new Error('Missing auth token');
     }
 
-    const addToUserHistory = async (meetingCode) => {
-        try {
-            let request = await client.post("/add_to_activity", {
-                token: localStorage.getItem("token"),
-                meeting_code: meetingCode
-            });
-            return request
-        } catch (e) {
-            throw e;
-        }
-    }
+    return api.post('/add_to_activity', {
+      token: currentToken,
+      meeting_code: meetingCode,
+    });
+  };
 
+  const getHistoryOfUser = async () => {
+    const currentToken = localStorage.getItem(TOKEN_KEY);
+    const { data } = await api.get('/get_all_activity', {
+      params: { token: currentToken },
+    });
 
-    const data = {
-        userData, setUserData, addToUserHistory, getHistoryOfUser, handleRegister, handleLogin
-    }
+    return data;
+  };
 
-    return (
-        <AuthContext.Provider value={data}>
-            {children}
-        </AuthContext.Provider>
-    )
+  const logout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    setToken(null);
+    setUser(null);
+  };
 
-}
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        loading,
+        handleLogin,
+        handleRegister,
+        refreshProfile,
+        updateProfile,
+        addToUserHistory,
+        getHistoryOfUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
