@@ -1,7 +1,14 @@
 import { Phone, Video, Info, Search, MoreHorizontal } from 'lucide-react';
 import Avatar from '../Shared/Avatar';
 
-const TopBar = ({ conversation, currentUser, showInfo, onToggleInfo, onStartVideoCall }) => {
+const TopBar = ({
+  conversation,
+  currentUser,
+  showInfo,
+  onToggleInfo,
+  onStartVideoCall,
+  onStartVoiceCall,
+}) => {
   if (!conversation) return null;
 
   const peer = conversation.participants?.find((p) => {
@@ -44,7 +51,7 @@ const TopBar = ({ conversation, currentUser, showInfo, onToggleInfo, onStartVide
         <button className="icon-btn" title="Search messages">
           <Search size={15} />
         </button>
-        <button className="icon-btn" title="Voice call">
+        <button className="icon-btn" title="Voice call" onClick={onStartVoiceCall}>
           <Phone size={15} />
         </button>
         <button className="icon-btn" title="Video call" onClick={onStartVideoCall}>

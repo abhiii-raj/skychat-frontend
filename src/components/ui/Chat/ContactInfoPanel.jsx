@@ -17,7 +17,13 @@ const getFileClass = (mime = '') => {
   return 'other';
 };
 
-const ContactInfoPanel = ({ conversation, sharedFiles = [], sharedMedia = [] }) => {
+const ContactInfoPanel = ({
+  conversation,
+  sharedFiles = [],
+  sharedMedia = [],
+  onStartVoiceCall,
+  onStartVideoCall,
+}) => {
   const { user } = useAuth();
 
   if (!conversation) return null;
@@ -48,10 +54,10 @@ const ContactInfoPanel = ({ conversation, sharedFiles = [], sharedMedia = [] }) 
         )}
 
         <div className="info-actions">
-          <button className="icon-btn" title="Voice call">
+          <button className="icon-btn" title="Voice call" onClick={onStartVoiceCall}>
             <Phone size={15} />
           </button>
-          <button className="icon-btn" title="Video call">
+          <button className="icon-btn" title="Video call" onClick={onStartVideoCall}>
             <Video size={15} />
           </button>
         </div>

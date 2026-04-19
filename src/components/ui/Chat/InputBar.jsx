@@ -101,6 +101,7 @@ const InputBar = ({ conversation, onMessageSent }) => {
 
   const handleSend = async () => {
     if ((!text.trim() && !filePreview) || sending || !conversation) return;
+    if (conversation?.isGroup) return;
 
     setSending(true);
     stopTyping();
@@ -143,7 +144,7 @@ const InputBar = ({ conversation, onMessageSent }) => {
     }
   };
 
-  const canSend = (text.trim() || filePreview) && !sending;
+  const canSend = (text.trim() || filePreview) && !sending && !conversation?.isGroup;
 
   return (
     <div className="input-bar">
@@ -194,11 +195,13 @@ const InputBar = ({ conversation, onMessageSent }) => {
           <textarea
             ref={textareaRef}
             rows={1}
-            placeholder="Type a message… (Enter to send, Shift+Enter for newline)"
+            placeholder={conversation?.isGroup
+              ? 'Group messaging is not enabled yet. Use group video call.'
+              : 'Type a message… (Enter to send, Shift+Enter for newline)'}
             value={text}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            disabled={sending}
+            disabled={sending || conversation?.isGroup}
           />
 
           {/* Emoji placeholder */}

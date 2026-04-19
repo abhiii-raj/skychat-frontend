@@ -11,10 +11,10 @@ import './styles/skychat.css';
 
 /* Inner app that has access to AuthContext */
 const AppRoutes = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   return (
-    <SocketProvider token={token}>
+    <SocketProvider token={token} userId={user?._id}>
       <Routes>
         <Route path="/login"    element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

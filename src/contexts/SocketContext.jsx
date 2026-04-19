@@ -5,7 +5,7 @@ const SocketContext = createContext(null);
 
 export const useSocket = () => useContext(SocketContext);
 
-export const SocketProvider = ({ children, token }) => {
+export const SocketProvider = ({ children, token, userId }) => {
   const socketRef = useRef(null);
   const [connected, setConnected] = useState(false);
 
@@ -17,13 +17,18 @@ export const SocketProvider = ({ children, token }) => {
       transports: ['websocket'],
     });
 
-    socketRef.current.on('connect', () => setConnected(true));
+    socketRef.current.on('connect', () => {
+      setConnected(true);
+      if (userId) {
+        socketRef.current.emit('register-user', userId);
+      }
+    });
     socketRef.current.on('disconnect', () => setConnected(false));
 
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [token]);
+  }, [token, userId]);
 
   return (
     <SocketContext.Provider value={{ socket: socketRef.current, connected }}>

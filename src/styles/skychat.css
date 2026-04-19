@@ -1339,6 +1339,106 @@ body {
 .sky-toast-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #6ee7b7; }
 .sky-toast-info    { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; }
 
+/* ─── VOICE CALL POPUP ──────────────────────────────────────────────────── */
+.voice-call-popup {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: min(360px, calc(100vw - 24px));
+  background: linear-gradient(165deg, rgba(17, 24, 39, 0.98) 0%, rgba(11, 15, 26, 0.98) 100%);
+  border: 1px solid var(--sky-border-md);
+  border-radius: var(--sky-radius-lg);
+  box-shadow: var(--sky-shadow-md);
+  padding: 14px;
+  z-index: 1200;
+  animation: fadeUp 0.22s ease;
+}
+
+.voice-call-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.voice-call-meta {
+  min-width: 0;
+}
+
+.voice-call-name {
+  font-family: var(--sky-font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sky-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voice-call-status {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--sky-text-2);
+}
+
+.voice-call-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.voice-control-btn {
+  height: 42px;
+  border-radius: var(--sky-radius-sm);
+  border: 1px solid var(--sky-border);
+  background: var(--sky-surface-2);
+  color: var(--sky-text-2);
+  font-family: var(--sky-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: var(--sky-transition);
+}
+
+.voice-control-btn:hover {
+  color: var(--sky-text-1);
+  border-color: var(--sky-border-md);
+  background: var(--sky-surface-3);
+}
+
+.voice-control-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.voice-control-btn:disabled:hover {
+  color: var(--sky-text-2);
+  border-color: var(--sky-border);
+  background: var(--sky-surface-2);
+}
+
+.voice-control-btn.active {
+  color: #dbeafe;
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.voice-control-btn.danger {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.16);
+}
+
+.voice-control-btn.danger:hover {
+  color: #fee2e2;
+  border-color: rgba(239, 68, 68, 0.55);
+  background: rgba(239, 68, 68, 0.26);
+}
+
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .auth-page { grid-template-columns: 1fr; }
@@ -1349,4 +1449,10 @@ body {
   .sidebar.open { transform: translateX(0); }
 
   .chat-info-panel { display: none; }
+
+  .voice-call-popup {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+  }
 }

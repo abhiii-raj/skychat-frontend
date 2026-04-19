@@ -39,6 +39,12 @@ const MessageList = ({ conversation, refreshKey = 0, onMessagesUpdate }) => {
   // Fetch messages for selected conversation
   const fetchMessages = useCallback(async (pg = 1) => {
     if (!conversation) return;
+    if (conversation.isGroup) {
+      setMessages([]);
+      setHasMore(false);
+      onMessagesUpdate?.([]);
+      return;
+    }
     setLoading(true);
     try {
       const peerId = conversation.isGroup

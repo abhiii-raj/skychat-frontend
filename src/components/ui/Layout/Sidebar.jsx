@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Edit, LogOut, Search, Hash, Video, Camera, Save, X } from 'lucide-react';
 import Avatar from '../Shared/Avatar';
 import { useAuth } from '../../../contexts/AuthContext';
-import { usersAPI } from '../../../services/api';
+import { conversationsAPI, usersAPI } from '../../../services/api';
 import { useSocket } from '../../../contexts/SocketContext';
 
 const formatTime = (iso) => {
@@ -24,6 +24,12 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [showProfileEditor, setShowProfileEditor] = useState(false);
+  const [showGroupCreator, setShowGroupCreator] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedMemberIds, setSelectedMemberIds] = useState([]);
+  const [creatingGroup, setCreatingGroup] = useState(false);
+  const [groupError, setGroupError] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState('');
   const [profileForm, setProfileForm] = useState({ name: '', bio: '' });
@@ -32,28 +38,19 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
 
   const fetchConversations = useCallback(async () => {
     try {
-      const { data } = await usersAPI.getAll();
-      const currentUser = {
-        _id: user?._id || 'self',
-        name: user?.name || 'You',
-        username: user?.username,
-      };
+      const [{ data: conversationsData }, { data: usersData }] = await Promise.all([
+        conversationsAPI.getAll(),
+        usersAPI.getAll(),
+      ]);
 
-      const contacts = (Array.isArray(data) ? data : []).map((peer) => ({
-        _id: `dm-${peer._id}`,
-        isGroup: false,
-        participants: [currentUser, peer],
-        unreadCount: 0,
-        lastMessage: null,
-      }));
-
-      setConversations(contacts);
+      setConversations(Array.isArray(conversationsData) ? conversationsData : []);
+      setAllUsers(Array.isArray(usersData) ? usersData : []);
     } catch {
       // silent
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => { fetchConversations(); }, [fetchConversations]);
 
@@ -106,6 +103,58 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
     setShowProfileEditor(false);
     setProfileError('');
     setAvatarFile(null);
+  };
+
+  const openGroupCreator = () => {
+    setGroupError('');
+    setGroupName('');
+    setSelectedMemberIds([]);
+    setShowGroupCreator(true);
+  };
+
+  const closeGroupCreator = () => {
+    setShowGroupCreator(false);
+    setGroupError('');
+    setCreatingGroup(false);
+  };
+
+  const toggleGroupMember = (memberId) => {
+    setSelectedMemberIds((prev) => (
+      prev.includes(memberId)
+        ? prev.filter((id) => id !== memberId)
+        : [...prev, memberId]
+    ));
+  };
+
+  const handleCreateGroup = async () => {
+    try {
+      setCreatingGroup(true);
+      setGroupError('');
+
+      if (!groupName.trim()) {
+        setGroupError('Group name is required.');
+        return;
+      }
+
+      if (selectedMemberIds.length < 2) {
+        setGroupError('Select at least 2 members.');
+        return;
+      }
+
+      const { data: createdGroup } = await conversationsAPI.create({
+        isGroup: true,
+        name: groupName.trim(),
+        participantIds: selectedMemberIds,
+      });
+
+      setConversations((prev) => [createdGroup, ...prev]);
+      closeGroupCreator();
+      onSelectConv?.(createdGroup);
+    } catch (error) {
+      setGroupError(error?.response?.data?.message || 'Failed to create group.');
+    } finally {
+      setCreatingGroup(false);
+    }
   };
 
   const handleAvatarChange = (event) => {
@@ -163,6 +212,17 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
         >
           <Video size={14} />
           Start video meeting
+        </button>
+
+        <button
+          className="sidebar-video-btn"
+          type="button"
+          onClick={openGroupCreator}
+          title="Create group"
+          style={{ marginTop: 8 }}
+        >
+          <Hash size={14} />
+          Create group
         </button>
       </div>
 
@@ -309,6 +369,72 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
             >
               <Save size={14} />
               {savingProfile ? 'Saving...' : 'Save profile'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showGroupCreator && (
+        <div className="profile-modal-backdrop" onClick={closeGroupCreator}>
+          <div className="profile-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <h3>Create group</h3>
+              <button type="button" className="sidebar-icon-btn" onClick={closeGroupCreator}>
+                <X size={14} />
+              </button>
+            </div>
+
+            <div className="sky-field" style={{ marginBottom: 12 }}>
+              <label className="sky-label" htmlFor="group-name">Group Name</label>
+              <input
+                id="group-name"
+                className="sky-input"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                maxLength={80}
+                placeholder="Team Sync"
+              />
+            </div>
+
+            <p className="sidebar-section-label" style={{ padding: '0 0 8px' }}>Members</p>
+            <div style={{ maxHeight: 220, overflowY: 'auto', border: '1px solid var(--sky-border)', borderRadius: 10, padding: 8 }}>
+              {allUsers.map((candidate) => {
+                const checked = selectedMemberIds.includes(candidate._id);
+                return (
+                  <label
+                    key={candidate._id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      padding: '8px 6px',
+                      borderRadius: 8,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleGroupMember(candidate._id)}
+                    />
+                    <Avatar name={candidate.name} src={candidate.avatarUrl} size="sm" />
+                    <span style={{ fontSize: 13, color: 'var(--sky-text-1)' }}>{candidate.name}</span>
+                  </label>
+                );
+              })}
+            </div>
+
+            {groupError && <div className="sky-alert sky-alert-error" style={{ marginTop: 10 }}>{groupError}</div>}
+
+            <button
+              type="button"
+              className="sky-btn sky-btn-primary"
+              onClick={handleCreateGroup}
+              disabled={creatingGroup}
+              style={{ marginTop: 12 }}
+            >
+              <Save size={14} />
+              {creatingGroup ? 'Creating...' : 'Create Group'}
             </button>
           </div>
         </div>

@@ -13,7 +13,7 @@ import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare'
 import ChatIcon from '@mui/icons-material/Chat'
 import server from '../environment';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 const server_url = server;
 
@@ -42,6 +42,8 @@ const getInitials = (name = '') => {
 
 export default function VideoMeetComponent() {
     const { url: roomCode } = useParams();
+    const [searchParams] = useSearchParams();
+    const isVoiceCall = searchParams.get('mode') === 'voice';
 
     var socketRef = useRef();
     let socketIdRef = useRef();
@@ -151,7 +153,7 @@ export default function VideoMeetComponent() {
 
     }, [video, audio])
     let getMedia = () => {
-        setVideo(videoAvailable);
+        setVideo(isVoiceCall ? false : videoAvailable);
         setAudio(audioAvailable);
         connectToSocketServer();
 
