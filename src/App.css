@@ -1,0 +1,420 @@
+.landingPageContainer {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(15, 163, 127, 0.2) 0%, transparent 36%),
+    radial-gradient(circle at 8% 70%, rgba(2, 166, 194, 0.22) 0%, transparent 40%),
+    linear-gradient(130deg, #0f1f1d 5%, #112c2a 48%, #163734 100%);
+  color: #f3fcfa;
+  padding: 1.2rem 2.2rem 2rem;
+}
+
+.landingPageContainer nav {
+  padding-block: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.marketingNav {
+  background-color: #06154a;
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  gap: 1rem;
+}
+
+.navLeft,
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.leftNavLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.navHeader h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.plainNavButton {
+  border: none;
+  background: transparent;
+  color: #e7f0ff;
+  border-radius: 999px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.plainNavButton:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.actionNavButton {
+  border: none;
+  background: linear-gradient(145deg, #2a79ff, #1862e4);
+  color: #f1f7ff;
+  border-radius: 14px;
+  padding: 0.65rem 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.navSearch {
+  width: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background-color: rgba(7, 22, 76, 0.9);
+  color: #eef4ff;
+  padding: 0.55rem 0.8rem;
+}
+
+.navSearch::placeholder {
+  color: #b8c9ef;
+}
+
+.meetMenuRoot {
+  position: relative;
+}
+
+.meetDropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 170px;
+  display: grid;
+  gap: 0.3rem;
+  background-color: #0f2164;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 0.4rem;
+  z-index: 12;
+  box-shadow: 0 14px 25px rgba(0, 0, 0, 0.25);
+}
+
+.meetDropdown button {
+  border: none;
+  background: transparent;
+  color: #eaf2ff;
+  border-radius: 10px;
+  padding: 0.55rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.meetDropdown button:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.landingPageContainer nav .navlist {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.landingPageContainer nav .navlist p {
+  padding: 0.6rem 0.85rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.landingPageContainer nav .navlist p:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.landingPageContainer nav .navlist div[role='button'] {
+  background: linear-gradient(135deg, #0fa37f, #0f7da3);
+  color: #ecfffa;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(15, 163, 127, 0.35);
+}
+
+.landingMainContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 2.4rem;
+}
+
+.landingMainContainer > div:nth-child(1) {
+  max-width: 580px;
+  animation: riseIn 0.9s ease;
+}
+
+.landingMainContainer > div:nth-child(1) h1 {
+  font-size: clamp(2.1rem, 5.6vw, 4.4rem);
+  line-height: 1.03;
+}
+
+.landingMainContainer > div:nth-child(1) p {
+  margin-top: 1rem;
+  font-size: 1.08rem;
+  color: #ceebe5;
+}
+
+.landingMainContainer > div:nth-child(1) div[role='button'] {
+  width: fit-content;
+  margin-top: 1.7rem;
+  border-radius: 16px;
+  background: #f0fff9;
+  padding: 0.2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+.landingMainContainer > div:nth-child(1) div[role='button'] a {
+  display: inline-block;
+  text-decoration: none;
+  color: #083b32;
+  background: linear-gradient(135deg, #ddfff4, #bff2e4);
+  border-radius: 14px;
+  padding: 0.88rem 1.25rem;
+  font-size: 1.06rem;
+  font-weight: 800;
+}
+
+.landingMainContainer > div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.landingMainContainer > div:nth-child(2) img {
+  max-height: 71vh;
+  width: min(470px, 93%);
+  object-fit: contain;
+  animation: floatY 3.2s ease-in-out infinite;
+}
+
+.homeShell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(15, 163, 127, 0.16), transparent 34%),
+    linear-gradient(180deg, #eff8f5 0%, #e7f0ed 100%);
+}
+
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 3.2rem);
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(9, 73, 61, 0.1);
+}
+
+.brandTitle {
+  font-size: 1.35rem;
+  letter-spacing: -0.015em;
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.meetContainer {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 4.5rem);
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 0 1.2rem 2rem;
+}
+
+.leftPanel {
+  padding: clamp(1.3rem, 3.2vw, 2rem);
+  border-radius: 24px;
+  background-color: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(8, 63, 53, 0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.leftPanel h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  max-width: 580px;
+}
+
+.meetActionRow {
+  margin-top: 1.15rem;
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.rightPanel {
+  display: flex;
+  justify-content: center;
+}
+
+.rightPanel > img {
+  width: min(500px, 90%);
+  border-radius: 28px;
+  border: 10px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 25px 45px rgba(8, 58, 50, 0.18);
+}
+
+.historyPage {
+  min-height: 100vh;
+  padding: 1.2rem 1.2rem 2.5rem;
+  background:
+    radial-gradient(circle at 86% 10%, rgba(15, 163, 127, 0.14) 0%, transparent 35%),
+    #eef6f3;
+}
+
+.historyTopBar {
+  max-width: 920px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.historyGrid {
+  max-width: 920px;
+  margin: 0 auto;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.historyCard {
+  border-radius: 16px;
+  border: 1px solid rgba(11, 74, 63, 0.16);
+  box-shadow: 0 10px 24px rgba(9, 58, 51, 0.08);
+  background-color: rgba(255, 255, 255, 0.88);
+}
+
+.pricingPage {
+  min-height: 100vh;
+  padding: 1.2rem;
+  background: radial-gradient(circle at 12% 10%, rgba(40, 126, 255, 0.2) 0%, transparent 38%), #edf2ff;
+}
+
+.pricingContent {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.pricingContent h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  margin-bottom: 0.35rem;
+}
+
+.pricingContent p {
+  color: #41506f;
+}
+
+.pricingGrid {
+  margin-top: 1.3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+
+.pricingCard {
+  background-color: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(48, 88, 175, 0.18);
+  box-shadow: 0 12px 24px rgba(24, 47, 95, 0.1);
+  padding: 1rem;
+}
+
+.pricingCard h2 {
+  margin-bottom: 0.35rem;
+}
+
+.pricingValue {
+  color: #2758c4;
+  font-weight: 800;
+  margin-bottom: 0.7rem;
+}
+
+.pricingCard ul {
+  display: grid;
+  gap: 0.45rem;
+  margin-left: 1.1rem;
+  color: #46587c;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(-6px);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 900px) {
+  .landingPageContainer {
+    padding-inline: 1rem;
+  }
+
+  .landingPageContainer nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .navLeft,
+  .navRight {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .navSearch {
+    width: 100%;
+  }
+
+  .landingMainContainer {
+    flex-direction: column;
+    margin-top: 1.2rem;
+    align-items: flex-start;
+  }
+
+  .landingMainContainer > div:nth-child(2) {
+    width: 100%;
+  }
+
+  .meetContainer {
+    grid-template-columns: 1fr;
+    margin-top: 1.2rem;
+  }
+
+  .navBar {
+    align-items: flex-start;
+    gap: 0.7rem;
+    flex-direction: column;
+  }
+
+  .navActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

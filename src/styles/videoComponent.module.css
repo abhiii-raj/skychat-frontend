@@ -1,0 +1,193 @@
+.lobbyWrapper {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 12% 10%, rgba(36, 200, 162, 0.2) 0%, transparent 38%),
+        radial-gradient(circle at 84% 12%, rgba(37, 136, 207, 0.2) 0%, transparent 40%),
+        linear-gradient(130deg, #0f1f1d 0%, #123330 45%, #0f2523 100%);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+}
+
+.lobbyCard {
+    width: min(760px, 96vw);
+    border-radius: 26px;
+    padding: 1.2rem;
+    background: rgba(245, 255, 251, 0.9);
+    box-shadow: 0 20px 60px rgba(0, 15, 12, 0.4);
+}
+
+.lobbyCard h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 0.5rem;
+    color: #11312d;
+}
+
+.lobbyCard p {
+    color: #3f5f5a;
+}
+
+.lobbyActions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.lobbyPreview {
+    margin-top: 1rem;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #081d1a;
+    border: 1px solid rgba(10, 82, 68, 0.24);
+}
+
+.lobbyPreview video {
+    width: 100%;
+    min-height: 240px;
+    object-fit: cover;
+    display: block;
+}
+
+.meetVideoContainer {
+    position: relative;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 92% 8%, rgba(15, 163, 127, 0.18) 0%, transparent 40%),
+        linear-gradient(180deg, #102926 0%, #0b1f1d 65%, #0a1716 100%);
+    padding: 1rem 1rem 5.8rem;
+}
+
+.meetUserVideo {
+    position: fixed;
+    bottom: 6.6rem;
+    right: 1rem;
+    width: min(23vw, 280px);
+    max-height: 200px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+    z-index: 8;
+}
+
+.buttonContainers {
+    position: fixed;
+    left: 50%;
+    bottom: 1.2rem;
+    transform: translateX(-50%);
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(9, 24, 22, 0.86);
+    border: 1px solid rgba(203, 244, 236, 0.15);
+    backdrop-filter: blur(7px);
+    z-index: 12;
+}
+
+.controlButton {
+    color: #e9fcf7 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.endCallButton {
+    color: #ffe9e9 !important;
+    background-color: rgba(204, 54, 54, 0.75) !important;
+}
+
+.buttonContainers svg {
+    font-size: 1.7rem;
+}
+
+.conferenceView {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    padding: 0.5rem;
+    gap: 0.8rem;
+}
+
+.conferenceView video {
+    width: 100%;
+    height: min(36vh, 300px);
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(245, 255, 252, 0.2);
+}
+
+.chatRoom {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    height: calc(100vh - 2rem);
+    width: min(360px, 92vw);
+    background: rgba(247, 255, 252, 0.95);
+    border-radius: 18px;
+    border: 1px solid rgba(9, 82, 67, 0.2);
+    box-shadow: 0 20px 35px rgba(4, 31, 25, 0.35);
+    padding: 0.9rem;
+    z-index: 10;
+}
+
+.chatContainer {
+    position: relative;
+    height: 100%;
+}
+
+.chatContainer h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #0c3630;
+}
+
+.chattingDisplay {
+    height: calc(100% - 90px);
+    overflow-y: auto;
+    padding-right: 0.3rem;
+}
+
+.chatItem {
+    margin-bottom: 0.95rem;
+    padding: 0.65rem;
+    border-radius: 10px;
+    background-color: #eef7f4;
+}
+
+.chatSender {
+    font-weight: 700;
+    color: #0d4b40;
+}
+
+.chattingArea {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+@media (max-width: 900px) {
+    .chatRoom {
+        position: fixed;
+        top: auto;
+        bottom: 5.8rem;
+        left: 0.75rem;
+        right: 0.75rem;
+        width: auto;
+        height: 54vh;
+    }
+
+    .meetUserVideo {
+        width: 36vw;
+        bottom: 6.2rem;
+        right: 0.7rem;
+    }
+
+    .lobbyActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
