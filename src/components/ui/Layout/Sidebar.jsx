@@ -57,6 +57,19 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
   // Real-time: bump conversation to top on new message
   useEffect(() => {
     if (!socket) return;
+
+    const applyPresence = (userId, isOnline) => {
+      if (!userId) return;
+      setConversations((prev) => prev.map((conv) => {
+        const participants = (conv.participants || []).map((participant) => (
+          String(participant?._id) === String(userId)
+            ? { ...participant, isOnline }
+            : participant
+        ));
+        return { ...conv, participants };
+      }));
+    };
+
     const handler = ({ conversationId, message }) => {
       setConversations((prev) => {
         const idx = prev.findIndex((c) => c._id === conversationId);
@@ -65,8 +78,18 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
         return [updated, ...prev.filter((c) => c._id !== conversationId)];
       });
     };
+
+    const presenceHandler = ({ userId, isOnline }) => {
+      applyPresence(userId, Boolean(isOnline));
+    };
+
     socket.on('new_message', handler);
-    return () => socket.off('new_message', handler);
+    socket.on('user_presence_update', presenceHandler);
+
+    return () => {
+      socket.off('new_message', handler);
+      socket.off('user_presence_update', presenceHandler);
+    };
   }, [socket]);
 
   const findPeer = (conv) => {

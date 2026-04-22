@@ -30,6 +30,11 @@ export const SocketProvider = ({ children, token, userId }) => {
     };
   }, [token, userId]);
 
+  useEffect(() => {
+    if (!socketRef.current || !connected || !userId) return;
+    socketRef.current.emit('register-user', userId);
+  }, [connected, userId]);
+
   return (
     <SocketContext.Provider value={{ socket: socketRef.current, connected }}>
       {children}

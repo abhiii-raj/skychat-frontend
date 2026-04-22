@@ -5,6 +5,10 @@ const TopBar = ({
   conversation,
   currentUser,
   showInfo,
+  showMessageSearch,
+  messageSearchTerm,
+  onMessageSearchChange,
+  onToggleMessageSearch,
   onToggleInfo,
   onStartVideoCall,
   onStartVoiceCall,
@@ -48,7 +52,23 @@ const TopBar = ({
       </div>
 
       <div className="topbar-actions">
-        <button className="icon-btn" title="Search messages">
+        {showMessageSearch && (
+          <div className="topbar-search">
+            <Search size={14} />
+            <input
+              type="text"
+              placeholder="Search messages"
+              value={messageSearchTerm}
+              onChange={(e) => onMessageSearchChange?.(e.target.value)}
+            />
+          </div>
+        )}
+
+        <button
+          className={`icon-btn ${showMessageSearch ? 'active' : ''}`}
+          title="Search messages"
+          onClick={onToggleMessageSearch}
+        >
           <Search size={15} />
         </button>
         <button className="icon-btn" title="Voice call" onClick={onStartVoiceCall}>

@@ -21,6 +21,15 @@ const InputBar = ({ conversation, onMessageSent }) => {
   const typingTimerRef            = useRef(null);
   const isTypingRef               = useRef(false);
 
+  const getPeerId = useCallback(() => {
+    if (!conversation || conversation.isGroup) return null;
+    return conversation.participants?.find((p) => {
+      if (user?._id && p._id) return p._id !== user._id;
+      if (user?.username && p.username) return p.username !== user.username;
+      return p._id !== 'self';
+    })?._id || null;
+  }, [conversation, user]);
+
   // Auto-resize textarea
   const autoResize = () => {
     const ta = textareaRef.current;
@@ -50,27 +59,41 @@ const InputBar = ({ conversation, onMessageSent }) => {
   // Emit typing events
   const emitTyping = useCallback(() => {
     if (!socket || !conversation) return;
+    const toUserId = getPeerId();
+    if (!toUserId) return;
     if (!isTypingRef.current) {
       isTypingRef.current = true;
       socket.emit('typing', {
         conversationId: conversation._id,
+        fromUserId: user?._id,
+        toUserId,
         senderName: user?.name,
       });
     }
     clearTimeout(typingTimerRef.current);
     typingTimerRef.current = setTimeout(() => {
       isTypingRef.current = false;
-      socket.emit('stop_typing', { conversationId: conversation._id });
+      socket.emit('stop_typing', {
+        conversationId: conversation._id,
+        fromUserId: user?._id,
+        toUserId,
+      });
     }, TYPING_DEBOUNCE_MS);
-  }, [socket, conversation, user]);
+  }, [socket, conversation, user, getPeerId]);
 
   const stopTyping = useCallback(() => {
     clearTimeout(typingTimerRef.current);
     if (isTypingRef.current) {
       isTypingRef.current = false;
-      socket?.emit('stop_typing', { conversationId: conversation?._id });
+      const toUserId = getPeerId();
+      if (!toUserId) return;
+      socket?.emit('stop_typing', {
+        conversationId: conversation?._id,
+        fromUserId: user?._id,
+        toUserId,
+      });
     }
-  }, [socket, conversation]);
+  }, [socket, conversation, user, getPeerId]);
 
   const handleChange = (e) => {
     setText(e.target.value);
@@ -107,13 +130,7 @@ const InputBar = ({ conversation, onMessageSent }) => {
     stopTyping();
 
     try {
-      const peerId = conversation.isGroup
-        ? null
-        : conversation.participants?.find((p) => {
-          if (user?._id && p._id) return p._id !== user._id;
-          if (user?.username && p.username) return p.username !== user.username;
-          return p._id !== 'self';
-        })?._id;
+      const peerId = getPeerId();
 
       const payload = {
         recipientId: peerId,

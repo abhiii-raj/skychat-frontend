@@ -800,6 +800,38 @@ body {
   gap: 6px;
 }
 
+.topbar-search {
+  height: 34px;
+  width: min(280px, 38vw);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--sky-border);
+  border-radius: var(--sky-radius-sm);
+  background: var(--sky-surface-2);
+  color: var(--sky-text-2);
+}
+
+.topbar-search:focus-within {
+  border-color: var(--sky-blue);
+  box-shadow: var(--sky-shadow-glow);
+}
+
+.topbar-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--sky-text-1);
+  font-size: 13px;
+  font-family: var(--sky-font-body);
+}
+
+.topbar-search input::placeholder {
+  color: var(--sky-text-3);
+}
+
 .icon-btn {
   width: 34px;
   height: 34px;

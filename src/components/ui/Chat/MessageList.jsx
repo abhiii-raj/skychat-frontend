@@ -23,7 +23,7 @@ const formatDateLabel = (iso) => {
   return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
 };
 
-const MessageList = ({ conversation, refreshKey = 0, onMessagesUpdate }) => {
+const MessageList = ({ conversation, refreshKey = 0, searchTerm = '', onMessagesUpdate }) => {
   const { user } = useAuth();
   const { socket } = useSocket();
 
@@ -131,6 +131,15 @@ const MessageList = ({ conversation, refreshKey = 0, onMessagesUpdate }) => {
     }
   };
 
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredMessages = normalizedSearch
+    ? messages.filter((msg) => {
+      const text = (msg.content || '').toLowerCase();
+      const fileName = (msg.file?.name || '').toLowerCase();
+      return text.includes(normalizedSearch) || fileName.includes(normalizedSearch);
+    })
+    : messages;
+
   if (!conversation) {
     return (
       <div className="chat-empty">
@@ -151,13 +160,20 @@ const MessageList = ({ conversation, refreshKey = 0, onMessagesUpdate }) => {
     >
       {loading && page === 1 && <SkeletonMessages />}
 
-      {messages.map((msg, idx) => {
-        const prev = messages[idx - 1];
+      {!loading && filteredMessages.length === 0 && normalizedSearch && (
+        <div className="chat-empty" style={{ minHeight: 180 }}>
+          <div className="chat-empty-title">No messages found</div>
+          <div className="chat-empty-sub">Try a different keyword in this conversation</div>
+        </div>
+      )}
+
+      {filteredMessages.map((msg, idx) => {
+        const prev = filteredMessages[idx - 1];
         const showDateDivider = !prev || !isSameDay(prev.createdAt, msg.createdAt);
         const isSent = msg.sender?._id === user?._id || msg.senderId === user?._id;
 
         // Show avatar only for first message in a group from same sender
-        const nextMsg = messages[idx + 1];
+        const nextMsg = filteredMessages[idx + 1];
         const showAvatar = !isSent && (
           !nextMsg || nextMsg.sender?._id !== msg.sender?._id
         );

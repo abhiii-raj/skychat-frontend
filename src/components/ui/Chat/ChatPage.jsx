@@ -17,6 +17,8 @@ const ChatPage = () => {
 
   const [activeConversation, setActiveConversation] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
+  const [messageSearchTerm, setMessageSearchTerm] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [conversationMessages, setConversationMessages] = useState([]);
   const [callUi, setCallUi] = useState({
@@ -31,6 +33,8 @@ const ChatPage = () => {
   const handleSelectConv = (conv) => {
     setActiveConversation(conv);
     setShowInfo(false);
+    setShowMessageSearch(false);
+    setMessageSearchTerm('');
   };
 
   const handleMessageSent = (msg) => {
@@ -58,6 +62,24 @@ const ChatPage = () => {
         roomCode,
         conversationId: activeConversation._id,
         toUserIds: memberIds,
+        fromUser: {
+          _id: user._id,
+          name: user.name,
+          username: user.username,
+          avatarUrl: user.avatarUrl || '',
+        },
+      });
+    } else {
+      const peer = activeConversation.participants?.find((p) => p._id !== user._id);
+      const toUserId = peer?._id;
+      if (!toUserId) return;
+
+      socket.emit('place_call', {
+        fromUserId: user._id,
+        toUserId,
+        callType: 'video',
+        roomCode,
+        conversationId: activeConversation._id,
         fromUser: {
           _id: user._id,
           name: user.name,
@@ -130,6 +152,25 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!socket || !user?._id) return undefined;
+
+    socket.emit('register-user', user._id);
+
+    const onSocketConnect = () => {
+      socket.emit('register-user', user._id);
+    };
+
+    const onPresenceUpdate = ({ userId, isOnline }) => {
+      if (!userId) return;
+      setActiveConversation((prev) => {
+        if (!prev) return prev;
+        const participants = (prev.participants || []).map((participant) => (
+          String(participant?._id) === String(userId)
+            ? { ...participant, isOnline: Boolean(isOnline) }
+            : participant
+        ));
+        return { ...prev, participants };
+      });
+    };
 
     const findConversationForUser = (peerId, peerFallback) => {
       if (activeConversation?.participants?.some((p) => p._id === peerId)) {
@@ -236,6 +277,8 @@ const ChatPage = () => {
     socket.on('call_ended', onCallEnded);
     socket.on('call_missed', onCallMissed);
     socket.on('call_unavailable', onCallUnavailable);
+    socket.on('user_presence_update', onPresenceUpdate);
+    socket.on('connect', onSocketConnect);
 
     return () => {
       socket.off('call_ringing', onCallRinging);
@@ -245,6 +288,8 @@ const ChatPage = () => {
       socket.off('call_ended', onCallEnded);
       socket.off('call_missed', onCallMissed);
       socket.off('call_unavailable', onCallUnavailable);
+      socket.off('user_presence_update', onPresenceUpdate);
+      socket.off('connect', onSocketConnect);
     };
   }, [socket, user, activeConversation, navigate]);
 
@@ -271,6 +316,16 @@ const ChatPage = () => {
               conversation={activeConversation}
               currentUser={user}
               showInfo={showInfo}
+              showMessageSearch={showMessageSearch}
+              messageSearchTerm={messageSearchTerm}
+              onMessageSearchChange={setMessageSearchTerm}
+              onToggleMessageSearch={() => {
+                setShowMessageSearch((prev) => {
+                  const next = !prev;
+                  if (!next) setMessageSearchTerm('');
+                  return next;
+                });
+              }}
               onToggleInfo={() => setShowInfo((v) => !v)}
               onStartVideoCall={handleStartVideoCall}
               onStartVoiceCall={handleStartVoiceCall}
@@ -278,6 +333,7 @@ const ChatPage = () => {
             <MessageList
               conversation={activeConversation}
               refreshKey={refreshKey}
+              searchTerm={messageSearchTerm}
               onMessagesUpdate={setConversationMessages}
             />
             <InputBar
