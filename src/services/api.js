@@ -23,9 +23,16 @@ export const authAPI = {
 export const usersAPI = {
   getProfile: () => api.get('/profile'),
   getAll:  ()     => api.get('/users'),
+  getContacts: () => api.get('/contacts'),
   search:  (q)    => api.get(`/users/search?q=${q}`),
   getById: (id)   => api.get(`/users/${id}`),
   updateProfile: (data) => api.put('/profile', data),
+};
+
+export const friendsAPI = {
+  sendRequest: (userId) => api.post('/friends/request', { userId }),
+  acceptRequest: (userId) => api.post('/friends/accept', { userId }),
+  rejectRequest: (userId) => api.post('/friends/reject', { userId }),
 };
 
 // Messages

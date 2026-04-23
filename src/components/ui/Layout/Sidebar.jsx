@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Edit, LogOut, Search, Hash, Video, Camera, Save, X } from 'lucide-react';
 import Avatar from '../Shared/Avatar';
 import { useAuth } from '../../../contexts/AuthContext';
-import { conversationsAPI, usersAPI } from '../../../services/api';
+import { conversationsAPI, usersAPI, friendsAPI } from '../../../services/api';
 import { useSocket } from '../../../contexts/SocketContext';
 
 const formatTime = (iso) => {
@@ -30,6 +30,10 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
   const [selectedMemberIds, setSelectedMemberIds] = useState([]);
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [groupError, setGroupError] = useState('');
+  const [showContactActions, setShowContactActions] = useState(false);
+  const [activeContact, setActiveContact] = useState(null);
+  const [contactActionError, setContactActionError] = useState('');
+  const [contactActionLoading, setContactActionLoading] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState('');
   const [profileForm, setProfileForm] = useState({ name: '', bio: '' });
@@ -40,7 +44,7 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
     try {
       const [{ data: conversationsData }, { data: usersData }] = await Promise.all([
         conversationsAPI.getAll(),
-        usersAPI.getAll(),
+        usersAPI.getContacts(),
       ]);
 
       setConversations(Array.isArray(conversationsData) ? conversationsData : []);
@@ -111,8 +115,98 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
 
   const dms     = filtered.filter((c) => !c.isGroup);
   const groups  = filtered.filter((c) => c.isGroup);
+  const contacts = allUsers.filter((candidate) => (
+    (candidate.name || '').toLowerCase().includes(query.toLowerCase())
+  ));
 
   const getPeer = (conv) => findPeer(conv);
+
+  const openContactActions = (contact) => {
+    setContactActionError('');
+    setActiveContact(contact);
+    setShowContactActions(true);
+  };
+
+  const closeContactActions = () => {
+    setShowContactActions(false);
+    setActiveContact(null);
+    setContactActionError('');
+    setContactActionLoading(false);
+  };
+
+  const syncContact = (contactId, friendshipStatus, friendRequestId = null) => {
+    setAllUsers((prev) => prev.map((candidate) => (
+      candidate._id === contactId
+        ? { ...candidate, friendshipStatus, friendRequestId }
+        : candidate
+    )));
+
+    setActiveContact((prev) => {
+      if (!prev || prev._id !== contactId) return prev;
+      return { ...prev, friendshipStatus, friendRequestId };
+    });
+  };
+
+  const getConversationForPeer = (peerId) => conversations.find((conversation) => (
+    !conversation.isGroup && conversation.participants?.some((participant) => participant._id === peerId)
+  ));
+
+  const startChatWithContact = async (contact) => {
+    const existingConversation = getConversationForPeer(contact._id);
+    if (existingConversation) {
+      onSelectConv?.(existingConversation);
+      closeContactActions();
+      return;
+    }
+
+    const { data: conversation } = await conversationsAPI.create({ recipientId: contact._id });
+    setConversations((prev) => {
+      const alreadyExists = prev.some((candidate) => candidate._id === conversation._id);
+      if (alreadyExists) return prev;
+      return [conversation, ...prev];
+    });
+    onSelectConv?.(conversation);
+    closeContactActions();
+  };
+
+  const handleSendFriendRequest = async (contact) => {
+    try {
+      setContactActionLoading(true);
+      setContactActionError('');
+      const { data } = await friendsAPI.sendRequest(contact._id);
+      syncContact(contact._id, 'pending_sent', data?.requestId || null);
+    } catch (error) {
+      setContactActionError(error?.response?.data?.message || 'Failed to send friend request.');
+    } finally {
+      setContactActionLoading(false);
+    }
+  };
+
+  const handleAcceptFriendRequest = async (contact) => {
+    try {
+      setContactActionLoading(true);
+      setContactActionError('');
+      await friendsAPI.acceptRequest(contact._id);
+      syncContact(contact._id, 'friend', null);
+    } catch (error) {
+      setContactActionError(error?.response?.data?.message || 'Failed to accept friend request.');
+    } finally {
+      setContactActionLoading(false);
+    }
+  };
+
+  const handleRejectFriendRequest = async (contact) => {
+    try {
+      setContactActionLoading(true);
+      setContactActionError('');
+      await friendsAPI.rejectRequest(contact._id);
+      syncContact(contact._id, 'none', null);
+    } catch (error) {
+      setContactActionError(error?.response?.data?.message || 'Failed to reject friend request.');
+    } finally {
+      setContactActionLoading(false);
+    }
+  };
 
   const openProfileEditor = () => {
     setProfileError('');
@@ -298,7 +392,36 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
               </>
             )}
 
-            {filtered.length === 0 && !loading && (
+            {/* Contacts */}
+            {contacts.length > 0 && (
+              <>
+                <p className="sidebar-section-label" style={{ marginTop: '8px' }}>Contacts</p>
+                {contacts.map((contact) => (
+                  <ConvItem
+                    key={`contact-${contact._id}`}
+                    name={contact.name}
+                    src={contact.avatarUrl}
+                    preview={
+                      contact.friendshipStatus === 'friend'
+                        ? 'Friend'
+                        : contact.friendshipStatus === 'pending_sent'
+                          ? 'Friend request sent'
+                          : contact.friendshipStatus === 'pending_received'
+                            ? 'Wants to be your friend'
+                            : 'Not friends yet'
+                    }
+                    time=""
+                    unread={0}
+                    online={contact.isOnline}
+                    active={false}
+                    onClick={() => openContactActions(contact)}
+                    group={false}
+                  />
+                ))}
+              </>
+            )}
+
+            {filtered.length === 0 && contacts.length === 0 && !loading && (
               <div style={{
                 padding: '32px 16px',
                 textAlign: 'center',
@@ -459,6 +582,88 @@ const Sidebar = ({ activeConvId, onSelectConv, onNewChat, onStartVideoMeeting })
               <Save size={14} />
               {creatingGroup ? 'Creating...' : 'Create Group'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {showContactActions && activeContact && (
+        <div className="profile-modal-backdrop" onClick={closeContactActions}>
+          <div className="profile-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-modal-header">
+              <h3>Contact</h3>
+              <button type="button" className="sidebar-icon-btn" onClick={closeContactActions}>
+                <X size={14} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <Avatar name={activeContact.name} src={activeContact.avatarUrl} size="lg" online={activeContact.isOnline} />
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--sky-text-1)' }}>{activeContact.name}</div>
+                <div style={{ fontSize: 12, color: 'var(--sky-text-3)' }}>@{activeContact.username}</div>
+              </div>
+            </div>
+
+            {activeContact.friendshipStatus === 'none' && (
+              <button
+                type="button"
+                className="sky-btn sky-btn-primary"
+                onClick={() => handleSendFriendRequest(activeContact)}
+                disabled={contactActionLoading}
+              >
+                {contactActionLoading ? 'Sending...' : 'Add as Friend'}
+              </button>
+            )}
+
+            {activeContact.friendshipStatus === 'pending_sent' && (
+              <button
+                type="button"
+                className="sky-btn sky-btn-outline"
+                disabled
+              >
+                Request Sent
+              </button>
+            )}
+
+            {activeContact.friendshipStatus === 'pending_received' && (
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="button"
+                  className="sky-btn sky-btn-primary"
+                  onClick={() => handleAcceptFriendRequest(activeContact)}
+                  disabled={contactActionLoading}
+                  style={{ flex: 1 }}
+                >
+                  {contactActionLoading ? 'Accepting...' : 'Accept Friend'}
+                </button>
+                <button
+                  type="button"
+                  className="sky-btn sky-btn-outline"
+                  onClick={() => handleRejectFriendRequest(activeContact)}
+                  disabled={contactActionLoading}
+                  style={{ flex: 1 }}
+                >
+                  Reject
+                </button>
+              </div>
+            )}
+
+            {activeContact.friendshipStatus === 'friend' && (
+              <button
+                type="button"
+                className="sky-btn sky-btn-primary"
+                onClick={() => startChatWithContact(activeContact)}
+                disabled={contactActionLoading}
+              >
+                Start Chat
+              </button>
+            )}
+
+            {contactActionError && (
+              <div className="sky-alert sky-alert-error" style={{ marginTop: 12 }}>
+                {contactActionError}
+              </div>
+            )}
           </div>
         </div>
       )}
